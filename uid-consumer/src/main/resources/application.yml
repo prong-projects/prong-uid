@@ -1,0 +1,51 @@
+server: 
+  port: 9999
+mybatis: # mybatis配置官方说明 http://www.mybatis.org/spring-boot-starter/mybatis-spring-boot-autoconfigure/
+  configuration:
+    default-fetch-size: 100
+    default-statement-timeout: 30
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath*:mapper/**/*.xml
+mapper: 
+  mappers: 
+    - tk.mybatis.mapper.common.Mapper
+spring: 
+  application: 
+    name: uid-consumer
+  datasource: 
+    driver-class-name: com.mysql.jdbc.Driver
+    # druid 详细配置说明请参看官网 https://github.com/alibaba/druid/tree/master/druid-spring-boot-starter
+    # 连接池配置 默认值请参看：com.alibaba.druid.pool.DruidAbstractDataSource、https://github.com/alibaba/druid/wiki/DruidDataSource%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8
+    druid: 
+      filters: stat     # 属性类型是字符串，通过别名的方式配置扩展插件，常用的插件有：监控统计用的filter:stat、日志用的filter:log4j、防御sql注入的filter:wall
+      defaultAutoCommit: true
+      initialSize: 2    # 初始化时建立物理连接的个数。初始化发生在显示调用init方法，或者第一次getConnection时
+      max-active: 10    # 最大连接池数量
+      min-idle: 1       # 最小连接池数量
+      max-pool-prepared-statement-per-connection-size: -1 # 要启用PSCache，必须配置大于0，当大于0时，poolPreparedStatements自动触发修改为true。在Druid中，不会存在Oracle下PSCache占用内存过多的问题，可以把这个数值配置大一些，比如说100
+      max-wait: 5000    # 获取连接时最大等待时间，单位毫秒。配置了maxWait之后，缺省启用公平锁，并发效率会有所下降，如果需要可以通过配置useUnfairLock属性为true使用非公平锁。
+      pool-prepared-statements: false  # 是否缓存preparedStatement，也就是PSCache。PSCache对支持游标的数据库性能提升巨大，比如说oracle。在mysql下建议关闭。
+      test-on-borrow: false # 申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。
+      test-on-return: false # 归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。
+      test-while-idle: true # 建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。
+      validation-query: SELECT 1 FROM DUAL  # 用来检测连接是否有效的sql，要求是一个查询语句，常用select 'x'。如果validationQuery为null，testOnBorrow、testOnReturn、testWhileIdle都不会起作用。
+    url: jdbc:mysql://localhost:xxxx/xxxx
+    username: xxxx
+    password: xxxx
+logging: 
+  file: ../logs/uid-consumer.log
+  level: 
+    io.prong.uid: ERROR
+    root: INFO
+# 以下为可选配置, 如未指定将采用默认值
+prong: 
+  uid: 
+    timeBits: 29
+    workerBits: 21
+    seqBits: 13
+    epochStr: "2018-11-26"
+    CachedUidGenerator:
+      boost-power: 3          # RingBuffer size扩容参数, 可提高UID生成的吞吐量, 默认:3
+      padding-factor: 50      # 指定何时向RingBuffer中填充UID, 取值为百分比(0, 100), 默认为50
+      #schedule-interval: 60  # 默认:不配置此项, 即不实用Schedule线程. 如需使用, 请指定Schedule线程时间间隔, 单位:秒
+ 
