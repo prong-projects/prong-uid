@@ -286,8 +286,8 @@ public void testSerialGenerate() {
 
 3、在浏览器访问：
 
-- http://localhost:9999/testdefaultuid：生成UID
-- http://localhost:9999/testcacheduid：生成预先缓存的UID
+- http://localhost:9999/testdefaultuid, 生成UID
+- http://localhost:9999/testcacheduid, 生成预先缓存的UID
 
 ### 关于UID比特分配的建议
 
